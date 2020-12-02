@@ -2,83 +2,94 @@ import java.util.Scanner;
 import java.io.*;
 
 public class App {
-    Scanner sc = new Scanner(System.in);
+
+    Scanner sc;
     BufferedReader reader;
     BufferedWriter writer;
-    File temp = new File("C:/Users/tibbi/Documents/workspace/java/isaak be like test/Temp.txt");
-    File list = new File("C:/Users/tibbi/Documents/workspace/java/isaak be like test/PWs.txt");
+    File temp;
+    File list;
 
     public static void main(String[] args) throws IOException {
         new App();
     }
 
     public App() throws IOException {
-            reader = new BufferedReader(new FileReader(list));
-            writer = new BufferedWriter(new FileWriter(temp));
-        System.out.println("willst du ein passwort eingeben?");
-        if (sc.nextLine().equalsIgnoreCase("ja")) {
-            passwort_eingabe();
-        }
-        System.out.println("willst du ein passwort ausgeben?");
-        if (sc.nextLine().equalsIgnoreCase("ja")) {
-            passwort_auslese();
-        }
-        System.out.println("willst du ein passwort löschen?");
-        if (sc.nextLine().equalsIgnoreCase("ja")) {
-            passwort_löschen();
+        sc = new Scanner(System.in);
+
+        temp = new File("./Temp.txt");
+        temp.createNewFile();
+
+        list = new File("./PWs.txt");
+        list.createNewFile();
+
+        reader = new BufferedReader(new FileReader(list));
+        writer = new BufferedWriter(new FileWriter(temp));
+
+        boolean abbruch = false;
+        while(!abbruch){
+            System.out.println("Was willst du tun? (eingeben|auslesen|löschen|stop)");
+            switch(sc.nextLine().toUpperCase()){
+                case "EINGEBEN":
+                    passwort_eingabe();
+                    break;
+                case "auslesen":
+                    passwort_auslese();
+                    break;
+                case "LÖSCHEN":
+                    passwort_löschen();
+                    break;
+                case "STOP":
+                    abbruch = true;
+                    break;
+            }
         }
         System.out.print("Programm Ende!");
-            reader.close();
-            writer.close();
+
+        reader.close();
+        writer.close();
     }
 
     public void passwort_eingabe() throws IOException {
-        do{
         System.out.print("wofür ist das Passwort? ");
-            writer.write("platform: "+sc.nextLine()+ " ");
+        writer.write("platform: " + sc.nextLine() + " ");
         System.out.print("wie lautet das Passwort? ");
-            writer.write("passwort: "+sc.nextLine());
+        writer.write("passwort: " + sc.nextLine());
         writer.newLine();
-        System.out.println("gebe um ein neues passwort einzugeben etwas beliebiges, und um zu stoppen \"stop\" ein");
-        }
-        while(!sc.nextLine().equalsIgnoreCase("stop"));
     }
     public void passwort_auslese() throws IOException {
         String line;
         String eingabe;
-        boolean found=false;
+        boolean found = false;
         System.out.print("welches Passwort benötigst du? ");
         eingabe = sc.nextLine();
-        while((line = reader.readLine()) != null){
-            if(line.contains(eingabe)){
-            System.out.print(line);
-            found=true;
-            }
-            else {
-                System.out.print("für diese Platform wurde noch nichts gespeicher!");
+        while ((line = reader.readLine()) != null) {
+            if (line.contains(eingabe)) {
+                System.out.print(line);
+                found = true;
+            } else {
+                System.out.println("für diese Platform wurde noch nichts gespeichert!");
             }
         }
-        if(!found){
-            System.out.print("es ist noch kein Passwort gespeichert worden!");
+        if (!found) {
+            System.out.println("es ist noch kein Passwort gespeichert worden!");
         }
     }
     public void passwort_löschen() throws IOException {
         String line;
         String eingabe;
-        boolean found=false;
+        boolean found = false;
         System.out.print("welches Passwort möchtest du löschen? ");
         eingabe = sc.nextLine();
-        while((line = reader.readLine()) != null){
+        while ((line = reader.readLine()) != null) {
             String tline = line.trim();
-            if(tline.equals(eingabe)){
-            writer.write(line + System.getProperty("line.seperator"));
-            found=true;
-            }
-            else{
+            if (tline.equals(eingabe)) {
+                writer.write(line + System.getProperty("line.seperator"));
+                found = true;
+            } else {
                 System.out.print("für diese Platform wurde noch nichts gespeicher!");
             }
         }
-        if(!found){
+        if (!found) {
             System.out.print("es ist noch kein Passwort gespeichert worden!");
         }
     }
