@@ -16,26 +16,23 @@ public class App {
     public App() throws IOException {
         sc = new Scanner(System.in);
 
-        temp = new File("./Temp.txt");
-        temp.createNewFile();
-
         list = new File("./PWs.txt");
         list.createNewFile();
 
         reader = new BufferedReader(new FileReader(list));
-        writer = new BufferedWriter(new FileWriter(temp));
+        writer = new BufferedWriter(new FileWriter(list,true));
 
         boolean abbruch = false;
         while(!abbruch){
-            System.out.println("Was willst du tun? (eingeben|auslesen|löschen|stop)");
+            System.out.println("Was willst du tun? (eingeben|auslesen|loeschen|stop)");
             switch(sc.nextLine().toUpperCase()){
                 case "EINGEBEN":
                     passwort_eingabe();
                     break;
-                case "auslesen":
+                case "AUSLESEN":
                     passwort_auslese();
                     break;
-                case "LÖSCHEN":
+                case "LOESCHEN":
                     passwort_löschen();
                     break;
                 case "STOP":
@@ -55,6 +52,7 @@ public class App {
         System.out.print("wie lautet das Passwort? ");
         writer.write("passwort: " + sc.nextLine());
         writer.newLine();
+        writer.flush();
     }
     public void passwort_auslese() throws IOException {
         String line;
@@ -75,22 +73,34 @@ public class App {
         }
     }
     public void passwort_löschen() throws IOException {
-        String line;
-        String eingabe;
-        boolean found = false;
-        System.out.print("welches Passwort möchtest du löschen? ");
-        eingabe = sc.nextLine();
-        while ((line = reader.readLine()) != null) {
-            String tline = line.trim();
-            if (tline.equals(eingabe)) {
-                writer.write(line + System.getProperty("line.seperator"));
-                found = true;
-            } else {
-                System.out.print("für diese Platform wurde noch nichts gespeicher!");
+        File tmp = File.createTempFile("tmp","txt");
+
+        System.out.println("Welches Platform löschen?");
+        String eingabe = sc.nextLine();
+
+        BufferedReader listReader = new BufferedReader(new FileReader(list));
+        BufferedWriter tmpWriter = new BufferedWriter(new FileWriter(tmp));
+        String listLine;
+
+        while((listLine=listReader.readLine())!=null){
+            if(!listLine.contains(eingabe)){
+                tmpWriter.write(listLine);
             }
         }
-        if (!found) {
-            System.out.print("es ist noch kein Passwort gespeichert worden!");
+
+        listReader.close();
+        tmpWriter.close();
+
+        BufferedReader tmpReader = new BufferedReader(new FileReader(tmp));
+        BufferedWriter listWriter = new BufferedWriter(new FileWriter(list));
+
+        String tmpLine;
+        while((tmpLine=tmpReader.readLine())!=null){
+            listWriter.write(tmpLine);
+            listWriter.newLine();
         }
+
+        tmpReader.close();
+        listWriter.close();
     }
 }
