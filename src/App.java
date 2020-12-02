@@ -5,16 +5,16 @@ public class App {
     Scanner sc = new Scanner(System.in);
     BufferedReader reader;
     BufferedWriter writer;
+    File temp = new File("C:/Users/tibbi/Documents/workspace/java/isaak be like test/Temp.txt");
+    File list = new File("C:/Users/tibbi/Documents/workspace/java/isaak be like test/PWs.txt");
 
     public static void main(String[] args) throws IOException {
         new App();
     }
 
     public App() throws IOException {
-            reader = new BufferedReader(
-                    new FileReader(new File("C:/Users/tibbi/Documents/workspace/java/isaak be like test/PWs.txt")));
-            writer = new BufferedWriter(
-                    new FileWriter(new File("C:/Users/tibbi/Documents/workspace/java/isaak be like test/PWs.txt"),true));
+            reader = new BufferedReader(new FileReader(list));
+            writer = new BufferedWriter(new FileWriter(temp));
         System.out.println("willst du ein passwort eingeben?");
         if (sc.nextLine().equalsIgnoreCase("ja")) {
             passwort_eingabe();
@@ -63,15 +63,15 @@ public class App {
         }
     }
     public void passwort_löschen() throws IOException {
-        // @NicoHubrach
         String line;
         String eingabe;
         boolean found=false;
         System.out.print("welches Passwort möchtest du löschen? ");
         eingabe = sc.nextLine();
         while((line = reader.readLine()) != null){
-            if(line.contains(eingabe)){
-            writer.write(" ");
+            String tline = line.trim();
+            if(tline.equals(eingabe)){
+            writer.write(line + System.getProperty("line.seperator"));
             found=true;
             }
             else{
